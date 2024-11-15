@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import './App.css'
-import Table from './Components/table'
-
+import Table from './Components/Table/table'
+import { Table_Headers } from './Components/constants/tableHeaders';
 function App() {
-  const headers = ['Name', 'Contact', 'Country'];
   const values = [
     { Name: 'Alfreds Futterkiste', Contact: 'Maria Anders', Country: 'Germany' },
     { Name: 'Centro comercial Moctezuma', Contact: 'Francisco Chang', Country: 'Mexico' },
@@ -15,7 +13,7 @@ function App() {
 
   return (
     <>
-      <Table headers={headers} values={values}/>
+      <Table headers={Table_Headers} values={values}/>
     </>
   )
 }
