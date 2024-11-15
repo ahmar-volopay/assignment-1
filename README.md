@@ -1,7 +1,7 @@
 # Assignment-1
 Assignment-1, basically creating a table by taking data from props.
 
-Taking Enums (headers from ./src/components/constants/tableHeaders.js) defining the structure of the table/(header of table).
+Taking Enums (headers from `./src/components/constants/tableHeaders.js`) defining the structure of the table/(header of table).
 
 Using these headers, in `./App.jsx`, we create an array to store the objects, i.e., `values`.
 
