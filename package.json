@@ -1,6 +1,5 @@
 {
   "name": "table-assignment1",
-  "homepage": "https://username.github.io/ahmar-volopay/assignment-1",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,9 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.3.1",
