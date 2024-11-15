@@ -1,1 +1,0 @@
-export const Table_Headers = ["Name", "Contact", "Country"]
