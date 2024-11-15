@@ -1,4 +1,4 @@
-# assignment-1
+# Assignment-1
 Assignment-1, basically creating a table by taking data from props.
 
 Taking Enums (headers from ./src/components/constants/tableHeaders.js) defining the structure of the table/(header of table).
