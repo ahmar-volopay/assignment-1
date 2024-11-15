@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Table = ({ headers, values }) => (
+const Table = ({ headers, rows }) => (
     <div>
-            <table className='border border-2 w-[70%] rounded-3xl'>
+        <table className='border border-2 w-[70%] rounded-3xl'>
             <thead>
                 <tr className='border-solid border-1'>
                     {headers.map((header) => (
@@ -16,8 +16,8 @@ const Table = ({ headers, values }) => (
                 </tr>
             </thead>
             <tbody>
-                {values.map((row, rowIndex) => (
-                    <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>
+                {rows.map((row) => (
+                    <tr key={row.id} className={rows.indexOf(row) % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>
                         {headers.map((header) => (
                             <td 
                                 key={header} 
@@ -34,7 +34,14 @@ const Table = ({ headers, values }) => (
 
 Table.propTypes = {
     headers: PropTypes.arrayOf(PropTypes.string).isRequired,  
-    values: PropTypes.arrayOf(PropTypes.object).isRequired,   
+    rows: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+            Name: PropTypes.string,
+            Contact: PropTypes.string,
+            Country: PropTypes.string,
+        }).isRequired
+    ).isRequired,
 };
 
 export default Table;
