@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Gainer from './Gainer';
-import Loser from './Loser';
+import Indicator from './Indicator';
 
 const DashBoard = () => {
     const [data, setData] = useState(null);
@@ -29,24 +28,17 @@ const DashBoard = () => {
                     <p>Loading metadata...</p>
                 )}
             </div>
-            {/* <div>
-                {data ? (
-                    <pre>{JSON.stringify(data, null, 2)}</pre> // This part displays the data as formatted JSON
-                ) : (
-                    <p>Loading...</p>
-                )}
-            </div> */}
-            <div className='flex '>
+            <div className='flex justify-center'>
                 <div>
                     {data && data.top_gainers ? (
-                        <Gainer data={data.top_gainers} />
+                        <Indicator data={data.top_gainers} type="gainers"/>
                     ) : (
                         <p>Loading top gainers...</p>
                     )}
                 </div>
                 <div>
                     {data && data.top_losers ? (
-                        <Loser top={data.top_losers} />
+                        <Indicator data={data.top_losers} type="losers"/>
                     ) : (
                         <p>Loading top losers...</p>
                     )}
