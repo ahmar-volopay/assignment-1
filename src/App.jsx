@@ -1,12 +1,16 @@
-import './App.css'
-import DashBoard from './components/Dashboard'
-function App() {
+import React from 'react';
+import { Provider } from 'react-redux';
+import store from './store';  
+import DashBoard from './components/Dashboard';
 
-  return (
-    <>
-      <DashBoard/>
-    </>
-  )
-}
+const App = () => {
+    return (
+        <Provider store={store}> 
+            <div className="App">
+                <DashBoard />  
+            </div>
+        </Provider>
+    );
+};
 
-export default App
+export default App;

@@ -1,50 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchStocks } from '../actions/stockActions';
 import Indicator from './Indicator';
 
 const DashBoard = () => {
-    const [data, setData] = useState(null);
+    const dispatch = useDispatch();
+    const { loading, metadata, top_gainers, top_losers, error } = useSelector(
+        (state) => state.stocks
+    );
 
     useEffect(() => {
-        axios
-            .get('https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=demo')
-            .then((response) => {
-                setData(response.data);
-                
-            })
-            .catch((error) => {
-                console.log('Error: ', error);
-            });
-    }, []);
-    
+        dispatch(fetchStocks());
+    }, [dispatch]);
 
     return (
-        <>
-            <div className='flex justify-center font-bold py-4 text-4xl'>DashBoard</div>
-            <div className="flex justify-center font-semibold py-2 text-2xl">
-                {data && data.metadata ? (
-                    <div>{data.metadata}</div>
-                ) : (
-                    <p>Loading metadata...</p>
-                )}
+        <div className="container mx-auto p-4">
+            <h1 className="text-center font-bold text-4xl py-4">DashBoard</h1>
+
+            <div className="text-center font-semibold text-2xl py-2">
+                {loading ? <p>Loading metadata...</p> : metadata}
             </div>
-            <div className='flex justify-center gap-2'>
+
+            {error && (
+                <div className="text-center text-red-500 font-semibold py-2">
+                    Error: {error}
+                </div>
+            )}
+
+            <div className="flex justify-center gap-4 py-4">
                 <div>
-                    {data && data.top_gainers ? (
-                        <Indicator data={data.top_gainers} type="gainers"/>
-                    ) : (
+                    {loading ? (
                         <p>Loading top gainers...</p>
+                    ) : (
+                        <Indicator data={top_gainers} type="gainers" />
                     )}
                 </div>
                 <div>
-                    {data && data.top_losers ? (
-                        <Indicator data={data.top_losers} type="losers"/>
-                    ) : (
+                    {loading ? (
                         <p>Loading top losers...</p>
+                    ) : (
+                        <Indicator data={top_losers} type="losers" />
                     )}
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
