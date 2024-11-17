@@ -28,7 +28,7 @@ const DashBoard = () => {
                     <p>Loading metadata...</p>
                 )}
             </div>
-            <div className='flex justify-center'>
+            <div className='flex justify-center gap-2'>
                 <div>
                     {data && data.top_gainers ? (
                         <Indicator data={data.top_gainers} type="gainers"/>
