@@ -1,4 +1,4 @@
-# Assignment-1
+# Assignment-2
 Assignment-1, basically creating a table by taking data from props.
 
 Here is a live version hosted on Netlify: https://harmonious-duckanoo-dfcc31.netlify.app/
