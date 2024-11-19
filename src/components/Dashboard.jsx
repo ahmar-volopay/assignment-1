@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchStocks } from '../actions/stockActions';
+import { fetchStocks } from '../store/actions/stockActions';
 import Indicator from './Indicator';
 
 const DashBoard = () => {
