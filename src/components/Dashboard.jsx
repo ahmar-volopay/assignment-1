@@ -7,7 +7,7 @@ import {
     getLoadingState,
     getErrorState,
     getMetadataState
-} from '../store/selectors/stockSelectors';
+} from '../store/selectors/stockSelectors'; 
 import Indicator from './Indicator';
 
 const DashBoard = () => {
