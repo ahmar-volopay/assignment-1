@@ -36,5 +36,5 @@ export const getStocksSummary = createSelector(
     totalStocks: topGainers.length + topLosers.length,
     topGainersCount: topGainers.length,
     topLosersCount: topLosers.length,
-  }) g
+  })
 );
