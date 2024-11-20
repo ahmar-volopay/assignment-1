@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const companySlice = createSlice({
-    name: 'company',
+    name: 'company-slice',
     initialState: {
+        name: null,
         loading: false,
         desc: null,
         address: null,
@@ -23,6 +24,7 @@ const companySlice = createSlice({
         },
         fetchCompanySuccess: (state, action) => {
             state.loading = false;
+            state.name = action.payload.Name;
             state.desc = action.payload.Description;
             state.address = action.payload.Address;                        
             state.currency = action.payload.Currency;                    

@@ -1,8 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Indicator = ({ data, type }) => {
+    const navigate = useNavigate();
+
     const heading = type === 'gainers' ? 'Top Gainers:-' : 'Top Losers:-';
     const backgroundColor = type === 'gainers' ? 'bg-green-200' : 'bg-red-200';
+
+    const handleRowClick = (ticker) => {
+        navigate(`/company/${ticker}`); 
+    };
 
     return (
         <>
@@ -20,7 +27,11 @@ const Indicator = ({ data, type }) => {
                 </thead>
                 <tbody>
                     {data.map((stock, index) => (
-                        <tr key={index} className="hover:bg-gray-100">
+                        <tr
+                            key={index}
+                            className="hover:bg-gray-100 cursor-pointer"
+                            onClick={() => handleRowClick(stock.ticker)}
+                        >
                             <td className="px-4 text-center py-2 border-b">{index + 1}</td>
                             <td className="px-4 text-center py-2 border-b">{stock.ticker}</td>
                             <td className="px-4 text-center py-2 border-b">{stock.price}</td>

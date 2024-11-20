@@ -1,12 +1,13 @@
-import { createSelector } from "@reduxjs/toolkit";
+export const getName = (state) => state.company.Name;
+export const getDesc = (state) => state.company.desc;
+export const getAddress = (state) => state.company.address;
+export const getCurrency = (state) => state.company.currency;
+export const getExchange = (state) => state.company.exchange;
+export const getSector = (state) => state.company.sector;
+export const getWebsite = (state) => state.company.website;
+export const getProfitMargin = (state) => state.company.profitMargin;
+export const getWeekHigh52 = (state) => state.company.WeekHigh52;
+export const getWeekLow52 = (state) => state.company.WeekLow52;
+export const getEps = (state) => state.company.eps;
 
-const getDesc = (state) => state.company.desc;
-const getAddress = (state) => state.company.address;
-const getCurrency = (state) => state.company.currency;
-const getExchange = (state) => state.company.exchange;
-const getSector = (state) => state.company.sector;
-const getWebsite = (state) => state.company.website;
-const profitMargin = (state) => state.company.profitMargin;
-const getWeekHigh52 = (state) => state.company.WeekHigh52;
-const getWeekLow52 = (state) => state.company.WeekLow52;
-const getEps = (state) => state.company.eps;
+export const getAllCompanyData = (state) => state.company;
