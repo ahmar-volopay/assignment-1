@@ -7,6 +7,7 @@ export const fetchCompany = (ticker) => async (dispatch) => {
         const response = await axios.get(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=9GSE2C13UW8GYWW5`);
         // apikey=9GSE2C13UW8GYWW5
         dispatch(fetchCompanySuccess(response.data));
+        console.log(response.data);
     } catch (error) {
         dispatch(fetchCompanyFailure(error.message));
     }

@@ -16,6 +16,8 @@ import {
   getEps
 } from '../store/selectors/companySelector';
 
+import CompanyChart from './CompanyChart';
+
 const CompanyPage = () => {
   const { ticker } = useParams();
   const dispatch = useDispatch();
@@ -122,8 +124,12 @@ const CompanyPage = () => {
           />
         </div>
       </div>
+      <div>
+        <CompanyChart ticker={ticker}/>
+      </div>
     </div>
   );
 };
+// 
 
 export default CompanyPage;

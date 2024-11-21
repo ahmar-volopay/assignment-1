@@ -4,8 +4,9 @@ import { fetchStocksRequest, fetchStocksSuccess, fetchStocksFailure } from '../r
 export const fetchStocks = () => async (dispatch) => {
     dispatch(fetchStocksRequest());
     try {
-        const response = await axios.get('https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=9GSE2C13UW8GYWW5');
+        const response = await axios.get('https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=demo');
         dispatch(fetchStocksSuccess(response.data));
+        console.log(response.data);
     } catch (error) {
         dispatch(fetchStocksFailure(error.message));
     }
