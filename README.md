@@ -1,8 +1,8 @@
-# Assignment-2
+# Assignment-3
 
 Hosted Project: https://capable-youtiao-eea16c.netlify.app/
 
-Assignment-2, Create a Dashboard/Landing Page to showcase "Top Gainers" & "Top Losers" in American Stock Market using API from https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=demo
+Assignment-3, Create a Dashboard/Landing Page to showcase "Top Gainers" & "Top Losers" in American Stock Market using API from https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=demo
 
 Created a Dashboard component to showcase the result of the API.
 
