@@ -34,8 +34,8 @@ const CompanyPage = () => {
   const sector = useSelector(getSector);
   const website = useSelector(getWebsite);
   const profitMargin = useSelector(getProfitMargin);
-  const WeekHigh52 = useSelector(getWeekHigh52);
-  const WeekLow52 = useSelector(getWeekLow52);
+  const weekHigh52 = useSelector(getWeekHigh52);
+  const weekLow52 = useSelector(getWeekLow52);
   const eps = useSelector(getEps);
 
   const loading = useSelector(state => state.company.loading);
@@ -44,7 +44,7 @@ const CompanyPage = () => {
   const InfoRow = ({ label, value }) => (
     <div className="flex justify-between py-2 border-b">
       <span className="font-medium text-gray-600">{label}</span>
-      <span>{value}</span>
+      <span>{value || "N/A"}</span>
     </div>
   );
 
@@ -74,15 +74,15 @@ const CompanyPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-white p-4 rounded shadow">
           <h3 className="text-sm text-gray-600 mb-1">52 Week High</h3>
-          <p className="text-2xl font-bold">{currency} {WeekHigh52}</p>
+          <p className="text-2xl font-bold">{currency} {weekHigh52 || "N/A"}</p>
         </div>
         <div className="bg-white p-4 rounded shadow">
           <h3 className="text-sm text-gray-600 mb-1">52 Week Low</h3>
-          <p className="text-2xl font-bold">{currency} {WeekLow52}</p>
+          <p className="text-2xl font-bold">{currency} {weekLow52 || "N/A"}</p>
         </div>
         <div className="bg-white p-4 rounded shadow">
           <h3 className="text-sm text-gray-600 mb-1">EPS</h3>
-          <p className="text-2xl font-bold">{currency} {eps}</p>
+          <p className="text-2xl font-bold">{currency} {eps || "N/A"}</p>
         </div>
       </div>
 
@@ -91,24 +91,33 @@ const CompanyPage = () => {
         
         <div className="mb-6">
           <h3 className="font-medium mb-2">Description</h3>
-          <p className="text-gray-600">{desc}</p>
+          <p className="text-gray-600">{desc || "No description available."}</p>
         </div>
 
         <div className="space-y-2">
           <InfoRow label="Sector" value={sector} />
-          <InfoRow label="Profit Margin" value={`${(profitMargin * 100).toFixed(2)}%`} />
+          <InfoRow 
+            label="Profit Margin" 
+            value={
+              profitMargin !== null && profitMargin !== undefined
+                ? `${(profitMargin * 100).toFixed(2)}%`
+                : "N/A"
+            }
+          />
           <InfoRow label="Address" value={address} />
           <InfoRow 
             label="Website" 
             value={
-              <a 
-                href={website} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-blue-600 hover:text-blue-800"
-              >
-                {website}
-              </a>
+              website ? (
+                <a 
+                  href={website} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  {website}
+                </a>
+              ) : "None"
             }
           />
         </div>
