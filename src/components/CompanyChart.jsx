@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getChartLoading,
-  getChartError,
-  getAnnualReports,
+  chartLoadingSelector,
+  chartErrorSelector,
+  annualReportsSelector,
 } from "../store/selectors/chartSelector";
 import {
   Chart as ChartJS,
@@ -27,9 +27,9 @@ ChartJS.register(
 );
 
 const CompanyChart = ({ ticker }) => {
-  const loading = useSelector(getChartLoading);
-  const error = useSelector(getChartError);
-  const annualReports = useSelector(getAnnualReports);
+  const loading = useSelector(chartLoadingSelector);
+  const error = useSelector(chartErrorSelector);
+  const annualReports = useSelector(annualReportsSelector);
 
   const dispatch = useDispatch();
 
@@ -65,13 +65,13 @@ const CompanyChart = ({ ticker }) => {
   );
 
   const chartData = {
-    labels: fiscalDates, 
+    labels: fiscalDates,
     datasets: [
       {
         label: "Total Revenue",
         data: totalRevenues,
         backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)", 
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 2,
       },
     ],

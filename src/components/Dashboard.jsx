@@ -2,22 +2,22 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchStocks } from '../store/actions/stockActions';
 import {
-    getTopGainersMemoized,
-    getTopLosersMemoized,
-    getLoadingState,
-    getErrorState,
-    getMetadataState
+    topGainersMemoizedSelector,
+    topLosersMemoizedSelector,
+    loadingStateSelector,
+    errorStateSelector,
+    metadataStateSelector
 } from '../store/selectors/stockSelectors'; 
 import Table from './core/Table';
 
 const DashBoard = () => {
     const dispatch = useDispatch();
 
-    const topGainers = useSelector(getTopGainersMemoized);
-    const topLosers = useSelector(getTopLosersMemoized);
-    const loading = useSelector(getLoadingState);
-    const error = useSelector(getErrorState);
-    const metadata = useSelector(getMetadataState);
+    const topGainers = useSelector(topGainersMemoizedSelector);
+    const topLosers = useSelector(topLosersMemoizedSelector);
+    const loading = useSelector(loadingStateSelector);
+    const error = useSelector(errorStateSelector);
+    const metadata = useSelector(metadataStateSelector);
 
     useEffect(() => {
         dispatch(fetchStocks());
