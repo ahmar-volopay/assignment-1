@@ -8,7 +8,7 @@ import {
     getErrorState,
     getMetadataState
 } from '../store/selectors/stockSelectors'; 
-import Indicator from './Indicator';
+import Table from './core/Table';
 
 const DashBoard = () => {
     const dispatch = useDispatch();
@@ -42,10 +42,10 @@ const DashBoard = () => {
             {error && renderError(error)}
             <div className="flex justify-center gap-4 py-4">
                 <div>
-                    {loading ? renderLoading('top gainers') : <Indicator data={topGainers} type="gainers" />}
+                    {loading ? renderLoading('top gainers') : <Table data={topGainers} type="gainers" />}
                 </div>
                 <div>
-                    {loading ? renderLoading('top losers') : <Indicator data={topLosers} type="losers" />}
+                    {loading ? renderLoading('top losers') : <Table data={topLosers} type="losers" />}
                 </div>
             </div>
         </div>

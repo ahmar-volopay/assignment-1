@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Indicator = ({ data, type }) => {
+const Table = ({ data, type }) => {
     const navigate = useNavigate();
 
     const heading = type === 'gainers' ? 'Top Gainers:-' : 'Top Losers:-';
@@ -48,4 +48,4 @@ const Indicator = ({ data, type }) => {
     );
 };
 
-export default Indicator;
+export default Table;
