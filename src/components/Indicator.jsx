@@ -11,6 +11,8 @@ const Indicator = ({ data, type }) => {
         navigate(`/company/${ticker}`); 
     };
 
+    const headers = data.length > 0 ? Object.keys(data[0]) : [];
+
     return (
         <>
             <h2 className="text-2xl font-bold py-4">{heading}</h2>
@@ -18,11 +20,11 @@ const Indicator = ({ data, type }) => {
                 <thead>
                     <tr>
                         <th className="px-4 py-2 text-center border-b">Index</th>
-                        <th className="px-4 py-2 text-center border-b">Ticker</th>
-                        <th className="px-4 py-2 text-center border-b">Price</th>
-                        <th className="px-4 py-2 text-center border-b">Change Amount</th>
-                        <th className="px-4 py-2 text-center border-b">Change Percentage</th>
-                        <th className="px-4 py-2 text-center border-b">Volume</th>
+                        {headers.map((header) => (
+                            <th key={header} className="px-4 py-2 text-center border-b capitalize">
+                                {header.replace('_', ' ')}
+                            </th>
+                        ))}
                     </tr>
                 </thead>
                 <tbody>
@@ -33,11 +35,11 @@ const Indicator = ({ data, type }) => {
                             onClick={() => handleRowClick(stock.ticker)}
                         >
                             <td className="px-4 text-center py-2 border-b">{index + 1}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.ticker}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.price}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.change_amount}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.change_percentage}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.volume}</td>
+                            {headers.map((header) => (
+                                <td key={header} className="px-4 text-center py-2 border-b">
+                                    {stock[header]}
+                                </td>
+                            ))}
                         </tr>
                     ))}
                 </tbody>
