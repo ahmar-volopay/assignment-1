@@ -1,8 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Indicator = ({ data, type }) => {
+
     const heading = type === 'gainers' ? 'Top Gainers:-' : 'Top Losers:-';
     const backgroundColor = type === 'gainers' ? 'bg-green-200' : 'bg-red-200';
+    const headers = data.length > 0 ? Object.keys(data[0]) : [];
 
     return (
         <>
@@ -11,22 +14,25 @@ const Indicator = ({ data, type }) => {
                 <thead>
                     <tr>
                         <th className="px-4 py-2 text-center border-b">Index</th>
-                        <th className="px-4 py-2 text-center border-b">Ticker</th>
-                        <th className="px-4 py-2 text-center border-b">Price</th>
-                        <th className="px-4 py-2 text-center border-b">Change Amount</th>
-                        <th className="px-4 py-2 text-center border-b">Change Percentage</th>
-                        <th className="px-4 py-2 text-center border-b">Volume</th>
+                        {headers.map((header) => (
+                            <th key={header} className="px-4 py-2 text-center border-b capitalize">
+                                {header.replace('_', ' ')}
+                            </th>
+                        ))}
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((stock, index) => (
-                        <tr key={index} className="hover:bg-gray-100">
+                        <tr
+                            key={index}
+                            className="hover:bg-gray-100 cursor-pointer"
+                        >
                             <td className="px-4 text-center py-2 border-b">{index + 1}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.ticker}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.price}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.change_amount}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.change_percentage}</td>
-                            <td className="px-4 text-center py-2 border-b">{stock.volume}</td>
+                            {headers.map((header) => (
+                                <td key={header} className="px-4 text-center py-2 border-b">
+                                    {stock[header]}
+                                </td>
+                            ))}
                         </tr>
                     ))}
                 </tbody>
