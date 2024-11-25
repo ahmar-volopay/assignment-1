@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { fetchCompanyRequest, fetchCompanySuccess, fetchCompanyFailure } from '../reducers/CompanyReducer';
+import { fetchCompanyRequest, fetchCompanySuccess, fetchCompanyFailure } from '../reducers/companyReducer';
 
 export const fetchCompany = (ticker) => async (dispatch) => {
     dispatch(fetchCompanyRequest());

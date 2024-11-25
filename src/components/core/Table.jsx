@@ -7,7 +7,6 @@ const Table = ({ data, headers, bgColor }) => {
   const handleRowClick = (ticker) => {
     navigate(`/company/${ticker}`);
   };
-  console.log(headers,data, bgColor);
   return (
     <div className="overflow-x-auto">
       {data && data.length > 0 ? (
