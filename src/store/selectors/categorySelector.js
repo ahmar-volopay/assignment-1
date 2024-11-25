@@ -1,0 +1,1 @@
+export const listCategorySelector = (state) => state.category.name;

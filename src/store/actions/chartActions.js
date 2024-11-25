@@ -1,6 +1,5 @@
 import axios from "axios";
 import {fetchChartRequest, fetchChartSuccess, fetchChartFailure} from '../reducers/chartReducer';
-import { resolve } from "chart.js/helpers";
 
 export const fetchChart = (ticker) => async (dispatch) => {
     dispatch(fetchChartRequest());
