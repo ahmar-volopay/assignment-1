@@ -5,7 +5,7 @@ import {
 } from "../reducers/productReducer";
 import axios from "axios";
 
-export const fetchProduct = (limit = 5, skip = 0) => {
+export const fetchProduct = (limit = 15, skip = 0) => {
     return async (dispatch) => {
       dispatch(fetchProductRequest());
       try {

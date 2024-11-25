@@ -5,7 +5,7 @@ const productSlice = createSlice({
     initialState: {
         loading: false,
         error: null,
-        products: [], // Store all the fetched products
+        products: [], 
     },
     reducers: {
         fetchProductRequest: (state) => {
@@ -14,7 +14,7 @@ const productSlice = createSlice({
         },
         fetchProductSuccess: (state, action) => {
             state.loading = false;
-            state.products = [...state.products, ...action.payload.products]; // Append new products
+            state.products = [...state.products, ...action.payload.products];
         },
         fetchProductFailure: (state, action) => {
             state.loading = false;
