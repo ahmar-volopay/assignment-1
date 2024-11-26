@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchProduct } from "../store/actions/productActions";
 import { titleSelector, categorySelector, priceSelector, ratingSelector, stockSelector, totalSelector } from "../store/selectors/productSelector";
 import { listCategorySelector } from "../store/selectors/categorySelector";
-import Category from "./Category";
+import Category from "./core/Category";
 import { useInView } from "react-intersection-observer";
 import { fetchCategory } from "../store/actions/categoryAction";
 
