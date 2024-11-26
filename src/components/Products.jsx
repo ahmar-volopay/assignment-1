@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProduct } from "../store/actions/productActions";
-import { fetchCategory } from "../store/actions/categoryAction";
-import {
-  titleSelector,
-  categorySelector,
-  priceSelector,
-  ratingSelector,
-  stockSelector,
-} from "../store/selectors/productSelector";
+import { titleSelector, categorySelector, priceSelector, ratingSelector, stockSelector, totalSelector } from "../store/selectors/productSelector";
 import { listCategorySelector } from "../store/selectors/categorySelector";
-import { useInView } from "react-intersection-observer";
 import Category from "./Category";
+import { useInView } from "react-intersection-observer";
+import { fetchCategory } from "../store/actions/categoryAction";
 
 const Product = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [prevCategory, setPrevCategory] = useState("");
+
+  // Per page/scroll fetch limit = 10-15
   const limit = 10;
 
+  // Fetching Categories from Categories-only API 
   const listCategory = useSelector(listCategorySelector);
+
   const titles = useSelector(titleSelector);
   const categories = useSelector(categorySelector);
   const prices = useSelector(priceSelector);
@@ -26,19 +26,29 @@ const Product = () => {
   const stocks = useSelector(stockSelector);
   const loading = useSelector((state) => state.product.loading);
   const error = useSelector((state) => state.product.error);
+  const total = useSelector(totalSelector);
 
   useEffect(() => {
     dispatch(fetchCategory());
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchProduct(limit, page * limit));
-  }, [dispatch, page]);
+    const shouldReplace = selectedCategory !== prevCategory;
+    if (selectedCategory !== prevCategory) {
+      setPage(0);
+      setPrevCategory(selectedCategory);
+    }
+    dispatch(fetchProduct(limit, page * limit, selectedCategory, shouldReplace));
+  }, [dispatch, page, selectedCategory, prevCategory]);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
 
   const { ref, inView } = useInView({
     triggerOnce: false,
     onChange: (inView) => {
-      if (inView && !loading) {
+      if (inView && !loading && page * limit < total) {
         setPage((prevPage) => prevPage + 1);
       }
     },
@@ -54,10 +64,24 @@ const Product = () => {
       <div className="p-2 flex flex-wrap gap-2">
         {listCategory.length > 0
           ? listCategory.slice(0, 5).map((category, index) => (
-            <Category key={index} name={category.name} />
+            <Category
+              key={index}
+              name={category.name}
+              onClick={() => handleCategoryClick(category.slug)}
+            />
           ))
           : "No categories available"}
-        <button className=" bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ">Clear</button>
+        <button
+          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => {
+            setSelectedCategory("");  
+            setPage(0);               
+            setPrevCategory("");      
+            dispatch(fetchProduct(10, 0, "", true)); //Force Clear
+          }}
+        >
+          Clear
+        </button>
       </div>
 
       <table className="min-w-full table-auto border-collapse border border-gray-800">
@@ -95,6 +119,10 @@ const Product = () => {
 
       {loading && page > 0 && <p>Loading more products...</p>}
       <div ref={ref} style={{ height: "20px" }}></div>
+      {
+        page * limit > total &&
+        <div className="flex justify-center font-bold">X - End of the List - X</div>
+      }
     </div>
   );
 };

@@ -12,7 +12,6 @@ export const fetchCategory = () => {
             const response = await axios.get(`https://dummyjson.com/products/categories`);
             const slicedCategories = response.data.slice(0, 5);
             dispatch(fetchCategorySuccess(slicedCategories));
-            console.log(slicedCategories);
         } catch (error) {
             dispatch(fetchCategoryFailure(error.message));
         }
