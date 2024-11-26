@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const Category= () => {
+const Category= ({name}) => {
     return (
-        <button value={1}>Category</button>
+        <button className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">{name}</button>
     );
 };
 

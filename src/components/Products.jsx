@@ -1,30 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProduct } from "../store/actions/productActions";
-import { titleSelector, categorySelector, priceSelector, ratingSelector, stockSelector } from "../store/selectors/productSelector";
+import { fetchCategory } from "../store/actions/categoryAction";
+import {
+  titleSelector,
+  categorySelector,
+  priceSelector,
+  ratingSelector,
+  stockSelector,
+} from "../store/selectors/productSelector";
+import { listCategorySelector } from "../store/selectors/categorySelector";
 import { useInView } from "react-intersection-observer";
 import Category from "./Category";
-import { listCategorySelector } from "../store/selectors/categorySelector";
-import { fetchCategory } from "../store/actions/categoryAction";
 
 const Product = () => {
   const dispatch = useDispatch();
-
   const [page, setPage] = useState(0);
   const limit = 10;
 
   const listCategory = useSelector(listCategorySelector);
-  useEffect(() => {
-    dispatch(fetchCategory());
-  },)
   const titles = useSelector(titleSelector);
   const categories = useSelector(categorySelector);
   const prices = useSelector(priceSelector);
   const ratings = useSelector(ratingSelector);
   const stocks = useSelector(stockSelector);
-
   const loading = useSelector((state) => state.product.loading);
   const error = useSelector((state) => state.product.error);
+
+  useEffect(() => {
+    dispatch(fetchCategory());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchProduct(limit, page * limit));
@@ -34,7 +39,6 @@ const Product = () => {
     triggerOnce: false,
     onChange: (inView) => {
       if (inView && !loading) {
-
         setPage((prevPage) => prevPage + 1);
       }
     },
@@ -46,27 +50,31 @@ const Product = () => {
   return (
     <div className="p-4">
       <h1 className="text-center font-bold text-2xl py-4">Product Table</h1>
-      <div className="p-2 flex justify-evenly">
-        <Category />
-        <Category />
-        <Category />
 
+      <div className="p-2 flex flex-wrap gap-2">
+        {listCategory.length > 0
+          ? listCategory.slice(0, 5).map((category, index) => (
+            <Category key={index} name={category.name} />
+          ))
+          : "No categories available"}
+        <button className=" bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ">Clear</button>
       </div>
+
       <table className="min-w-full table-auto border-collapse border border-gray-800">
         <thead className="bg-gray-200">
           <tr>
-            <th className="border px-4 py-2 ">Index</th>
-            <th className="border px-4 py-2 ">Title</th>
-            <th className="border px-4 py-2 ">Category</th>
-            <th className="border px-4 py-2 ">Price</th>
-            <th className="border px-4 py-2 ">Rating</th>
-            <th className="border px-4 py-2 ">Stock</th>
+            <th className="border px-4 py-2">Index</th>
+            <th className="border px-4 py-2">Title</th>
+            <th className="border px-4 py-2">Category</th>
+            <th className="border px-4 py-2">Price</th>
+            <th className="border px-4 py-2">Rating</th>
+            <th className="border px-4 py-2">Stock</th>
           </tr>
         </thead>
         <tbody>
-          {titles.length > 0 &&
+          {titles.length > 0 ? (
             titles.map((title, index) => (
-              <tr key={index}>
+              <tr key={`${title}-${index}`}>
                 <td className="border px-4 py-2">{index + 1}</td>
                 <td className="border px-4 py-2">{title}</td>
                 <td className="border px-4 py-2">{categories[index]}</td>
@@ -74,12 +82,18 @@ const Product = () => {
                 <td className="border px-4 py-2">{ratings[index]}</td>
                 <td className="border px-4 py-2">{stocks[index]}</td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" className="text-center py-4">
+                No products available
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 
       {loading && page > 0 && <p>Loading more products...</p>}
-
       <div ref={ref} style={{ height: "20px" }}></div>
     </div>
   );
