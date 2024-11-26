@@ -61,7 +61,8 @@ const Product = () => {
     <div className="p-4">
       <h1 className="text-center font-bold text-2xl py-4">Product Table</h1>
 
-      <div className="p-2 flex flex-wrap gap-2">
+      <div className="p-2 flex items-center flex-wrap gap-2 font-semibold">
+        <div>Filter from Categories: </div>
         {listCategory.length > 0
           ? listCategory.slice(0, 5).map((category, index) => (
             <Category
