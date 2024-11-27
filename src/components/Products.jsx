@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { fetchProduct } from "../store/actions/productActions";
 import { titleSelector, categorySelector, priceSelector, ratingSelector, stockSelector, totalSelector } from "../store/selectors/productSelector";
 import { listCategorySelector } from "../store/selectors/categorySelector";
@@ -9,11 +10,14 @@ import { fetchCategory } from "../store/actions/categoryAction";
 
 const Products = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [page, setPage] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
   const [prevCategory, setPrevCategory] = useState("");
   const [skip, setSkip] = useState(0);
-  const [isFetching, setIsFetching] = useState(true); // New flag to control calls
+  const [isFetching, setIsFetching] = useState(true);
 
   const limit = 15;
 
@@ -32,47 +36,58 @@ const Products = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!isFetching) return; // Prevent duplicate fetches
+    if (!isFetching) return;
     if (selectedCategory !== prevCategory || page === 0) {
-      // Fetch new category
       dispatch(fetchProduct(limit, 0, selectedCategory, true));
       setPrevCategory(selectedCategory);
-      setSkip(limit); 
-      setPage(1); // Reset page
+      setSkip(limit);
+      setPage(1);
     } else {
-      // Fetch for pagination
       dispatch(fetchProduct(limit, skip, selectedCategory, false));
       setSkip(skip + limit);
     }
-    setIsFetching(false); // Reset the fetching flag
+    setIsFetching(false);
   }, [dispatch, isFetching, selectedCategory, prevCategory, page, skip]);
 
-  // Trigger fetching for category change
+  // Handle category click
   const handleCategoryClick = (category) => {
-    if (category === selectedCategory) return; // Prevent unnecessary updates
+    if (category === selectedCategory) return;
     setSelectedCategory(category);
     setPage(0);
     setSkip(0);
-    setIsFetching(true); // Trigger a new fetch
+    setIsFetching(true);
+
+    // Update the URL with the selected category
+    setSearchParams({ category });
   };
 
-  // Intersection Observer for Pagination
-  const { ref, inView } = useInView({
-    triggerOnce: false,
-    onChange: (inView) => {
-      if (inView && !loading && page * limit < total) {
-        setIsFetching(true); // Trigger the next page fetch
-      }
-    },
-  });
-
+  // Clear filters and reset to default
   const handleClear = () => {
     setSelectedCategory("");
     setPage(0);
     setPrevCategory("");
     setSkip(0);
-    setIsFetching(true); // Trigger a reset fetch
+    setIsFetching(true);
+
+    // Remove the category from the URL
+    setSearchParams({});
   };
+
+  // Intersection Observer for pagination
+  const { ref, inView } = useInView({
+    triggerOnce: false,
+    onChange: (inView) => {
+      if (inView && !loading && page * limit < total) {
+        setIsFetching(true);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (!searchParams.get("category")) {
+      setSearchParams({ category: "" });
+    }
+  }, [searchParams, setSearchParams]);
 
   if (loading && page === 0) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -135,7 +150,7 @@ const Products = () => {
 
       {loading && page > 0 && <p>Loading more products...</p>}
       <div ref={ref} style={{ height: "20px" }}></div>
-      {page * limit > total && (
+      {page * limit >= total && (
         <div className="flex justify-center font-bold">X - End of the List - X</div>
       )}
     </div>
