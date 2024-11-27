@@ -16,8 +16,6 @@ export const fetchProduct = (limit = 10, skip = 0, selectedCategory = "", replac
       
       // Pass the replace flag along with the fetched data
       dispatch(fetchProductSuccess({ products: response.data.products, replace }));
-      console.log(response.data);
-      // console.log("API URL:", url);  
     } catch (error) {
       dispatch(fetchProductFailure(error.message));
     }
