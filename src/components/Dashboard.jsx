@@ -9,6 +9,7 @@ import {
   metadataStateSelector,
 } from '../store/selectors/stockSelectors';
 import Table from './core/Table';
+import { Link } from 'react-router-dom';
 
 const DashBoard = () => {
   const dispatch = useDispatch();
@@ -46,9 +47,9 @@ const DashBoard = () => {
       <div className="container mx-auto p-4">
         <h1 className="text-center font-bold text-4xl py-4">DashBoard</h1>
         <div className='flex justify-end'>
-          <a href='/products' className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
+          <Link to='/Products' className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
             View Products
-          </a>
+          </Link>
         </div>
         <div className="text-center font-semibold text-2xl py-2">
           {loading ? renderLoading('metadata') : metadata}

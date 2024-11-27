@@ -7,7 +7,7 @@ import Category from "./core/Category";
 import { useInView } from "react-intersection-observer";
 import { fetchCategory } from "../store/actions/categoryAction";
 
-const Product = () => {
+const Products = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -128,4 +128,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Products ;
