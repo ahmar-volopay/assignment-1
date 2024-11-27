@@ -33,6 +33,7 @@ const Products = () => {
   const loading = useSelector((state) => state.product.loading);
   const error = useSelector((state) => state.product.error);
 
+
   useEffect(() => {
     dispatch(fetchCategory());
   }, [dispatch]);
@@ -81,7 +82,7 @@ const Products = () => {
         {listCategory.length > 0
           ? listCategory.slice(0, 5).map((category, index) => (
               <Category
-                key={index}
+                key={category.slug}
                 name={category.name}
                 onClick={() => handleCategoryClick(category.slug)}
               />

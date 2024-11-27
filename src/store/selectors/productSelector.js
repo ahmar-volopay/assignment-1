@@ -13,5 +13,4 @@ export const ratingSelector = (state) =>
 export const stockSelector = (state) => 
     state.product.products?.map((product) => product.stock) || [];
 
-// Currently hard coding the value of total items in the API.
-export const totalSelector = (state) => state.product.total || 194;
+export const totalSelector = (state) => state.product.total ;
