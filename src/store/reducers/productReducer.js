@@ -6,7 +6,7 @@ const productSlice = createSlice({
     loading: false,
     error: null,
     products: [], 
-    total: null, // Total number of products
+    total: null, 
   },
   reducers: {
     fetchProductRequest: (state) => {
@@ -16,18 +16,15 @@ const productSlice = createSlice({
     fetchProductSuccess: (state, action) => {
       state.loading = false;
 
-      // Log action payload for debugging
       console.log("Payload received in fetchProductSuccess:", action.payload);
 
-      // Check if the Replace Flag is true
       if (action.payload.replace) {
-        state.products = action.payload.products; // Replace the products
+        state.products = action.payload.products; 
       } else {
-        state.products = [...state.products, ...action.payload.products]; // Append to the existing products
+        state.products = [...state.products, ...action.payload.products]; 
       }
 
-      // Update the total value
-      state.total = action.payload.total; // Use state to store the total
+      state.total = action.payload.total; 
       console.log("Updated state.total:", state.total);
     },
     fetchProductFailure: (state, action) => {
