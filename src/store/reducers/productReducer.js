@@ -16,7 +16,6 @@ const productSlice = createSlice({
     fetchProductSuccess: (state, action) => {
       state.loading = false;
 
-      console.log("Payload received in fetchProductSuccess:", action.payload);
 
       if (action.payload.replace) {
         state.products = action.payload.products; 
@@ -25,7 +24,6 @@ const productSlice = createSlice({
       }
 
       state.total = action.payload.total; 
-      console.log("Updated state.total:", state.total);
     },
     fetchProductFailure: (state, action) => {
       state.loading = false;

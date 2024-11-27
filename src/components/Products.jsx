@@ -13,7 +13,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [prevCategory, setPrevCategory] = useState("");
   const [skip, setSkip] = useState(0);
-  const [isFetching, setIsFetching] = useState(false); // New flag to control calls
+  const [isFetching, setIsFetching] = useState(true); // New flag to control calls
 
   const limit = 15;
 
@@ -27,19 +27,17 @@ const Products = () => {
   const error = useSelector((state) => state.product.error);
   const total = useSelector(totalSelector);
 
-  // Fetch categories once
   useEffect(() => {
     dispatch(fetchCategory());
   }, [dispatch]);
 
-  // Handle API fetch for products
   useEffect(() => {
     if (!isFetching) return; // Prevent duplicate fetches
     if (selectedCategory !== prevCategory || page === 0) {
       // Fetch new category
       dispatch(fetchProduct(limit, 0, selectedCategory, true));
       setPrevCategory(selectedCategory);
-      setSkip(limit); // Set skip for the next fetch
+      setSkip(limit); 
       setPage(1); // Reset page
     } else {
       // Fetch for pagination
@@ -58,6 +56,7 @@ const Products = () => {
     setIsFetching(true); // Trigger a new fetch
   };
 
+  // Intersection Observer for Pagination
   const { ref, inView } = useInView({
     triggerOnce: false,
     onChange: (inView) => {
