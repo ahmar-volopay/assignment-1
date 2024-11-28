@@ -1,13 +1,22 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
-const Table = ({ data, headers, bgColor }) => {
+const Table = ({
+  data,
+  headers,
+  bgColor,
+  renderRow,
+  onRowClick,
+  noDataMessage = "No data available",
+}) => {
   const navigate = useNavigate();
 
-  const handleRowClick = (ticker) => {
-    navigate(`/company/${ticker}`);
+  const handleRowClick = (row) => {
+    if (onRowClick) onRowClick(row);
+    else if (row.ticker) navigate(`/company/${row.ticker}`);
   };
-  console.log(headers,data, bgColor);
+
   return (
     <div className="overflow-x-auto">
       {data && data.length > 0 ? (
@@ -20,33 +29,48 @@ const Table = ({ data, headers, bgColor }) => {
                   key={header}
                   className="px-4 py-2 text-center border-b capitalize"
                 >
-                  {header.replace('_', ' ')}
+                  {header.replace("_", " ")}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((stock, index) => (
-              <tr
-                key={index}
-                className="hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleRowClick(stock.ticker)}
-              >
-                <td className="px-4 text-center py-2 border-b">{index + 1}</td>
-                {headers.map((header) => (
-                  <td key={header} className="px-4 text-center py-2 border-b">
-                    {stock[header] ?? "N/A"}
+            {data.map((row, index) =>
+              renderRow ? (
+                renderRow(row, index)
+              ) : (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleRowClick(row)}
+                >
+                  <td className="px-4 text-center py-2 border-b">
+                    {index + 1}
                   </td>
-                ))}
-              </tr>
-            ))}
+                  {headers.map((header) => (
+                    <td key={header} className="px-4 text-center py-2 border-b">
+                      {row[header] ?? "N/A"}
+                    </td>
+                  ))}
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       ) : (
-        <p className="text-center text-gray-600">No data available</p>
+        <p className="text-center text-gray-600">{noDataMessage}</p>
       )}
     </div>
   );
+};
+
+Table.propTypes = {
+  data: PropTypes.array.isRequired,
+  headers: PropTypes.array.isRequired,
+  bgColor: PropTypes.string,
+  renderRow: PropTypes.func,
+  onRowClick: PropTypes.func,
+  noDataMessage: PropTypes.string,
 };
 
 export default Table;

@@ -9,6 +9,7 @@ import {
   metadataStateSelector,
 } from '../store/selectors/stockSelectors';
 import Table from './core/Table';
+import { Link } from 'react-router-dom';
 
 const DashBoard = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const DashBoard = () => {
 
   const getHeaders = (data) => {
     if (data && data.length > 0) {
-      return Object.keys(data[0]); 
+      return Object.keys(data[0]);
     }
     return [];
   };
@@ -42,37 +43,44 @@ const DashBoard = () => {
   const losersHeaders = getHeaders(topLosers);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-center font-bold text-4xl py-4">DashBoard</h1>
-      <div className="text-center font-semibold text-2xl py-2">
-        {loading ? renderLoading('metadata') : metadata}
-      </div>
-      {error && renderError(error)}
-      <div className="flex justify-center gap-4 py-4">
-        <div>
-          {loading ? (
-            renderLoading('top gainers')
-          ) : (
-            <Table
-              data={topGainers}
-              headers={gainersHeaders}
-              bgColor="bg-green-200"
-            />
-          )}
+    <>
+      <div className="container mx-auto p-4">
+        <h1 className="text-center font-bold text-4xl py-4">DashBoard</h1>
+        <div className='flex justify-end'>
+          <Link to='/Products' className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
+            View Products
+          </Link>
         </div>
-        <div>
-          {loading ? (
-            renderLoading('top losers')
-          ) : (
-            <Table
-              data={topLosers}
-              headers={losersHeaders}
-              bgColor="bg-red-200"
-            />
-          )}
+        <div className="text-center font-semibold text-2xl py-2">
+          {loading ? renderLoading('metadata') : metadata}
+        </div>
+        {error && renderError(error)}
+        <div className="flex justify-center gap-4 py-4">
+          <div>
+            {loading ? (
+              renderLoading('top gainers')
+            ) : (
+              <Table
+                data={topGainers}
+                headers={gainersHeaders}
+                bgColor="bg-green-200"
+              />
+            )}
+          </div>
+          <div>
+            {loading ? (
+              renderLoading('top losers')
+            ) : (
+              <Table
+                data={topLosers}
+                headers={losersHeaders}
+                bgColor="bg-red-200"
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
