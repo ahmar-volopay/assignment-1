@@ -2,13 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-const Table = ({ 
-  data, 
-  headers, 
-  bgColor, 
-  renderRow, 
-  onRowClick, 
-  noDataMessage = "No data available" 
+const Table = ({
+  data,
+  headers,
+  bgColor,
+  renderRow,
+  onRowClick,
+  noDataMessage = "No data available",
 }) => {
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ const Table = ({
           <tbody>
             {data.map((row, index) =>
               renderRow ? (
-                renderRow(row, index) // Use custom row rendering if provided
+                renderRow(row, index)
               ) : (
                 <tr
                   key={index}
@@ -68,8 +68,8 @@ Table.propTypes = {
   data: PropTypes.array.isRequired,
   headers: PropTypes.array.isRequired,
   bgColor: PropTypes.string,
-  renderRow: PropTypes.func, // Custom row rendering function
-  onRowClick: PropTypes.func, // Optional callback for row click
+  renderRow: PropTypes.func,
+  onRowClick: PropTypes.func,
   noDataMessage: PropTypes.string,
 };
 
