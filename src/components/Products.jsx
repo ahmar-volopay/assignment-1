@@ -92,6 +92,7 @@ const Products = () => {
   if (loading && page === 0) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  const headers = ["title", "category", "price", "rating", "stock"];
   const data = titles.map((title, index) => ({
     title,
     category: categories[index],
@@ -99,8 +100,6 @@ const Products = () => {
     rating: ratings[index],
     stock: stocks[index],
   }));
-
-  const headers = data.length > 0 ? Object.keys(data[0]) : [];
 
   return (
     <div className="p-4">
