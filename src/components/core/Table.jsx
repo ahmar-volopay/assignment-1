@@ -9,6 +9,7 @@ const Table = ({
   renderRow,
   onRowClick,
   noDataMessage = "No data available",
+  editable
 }) => {
   const navigate = useNavigate();
 
@@ -32,6 +33,7 @@ const Table = ({
                   {header.replace("_", " ")}
                 </th>
               ))}
+              {editable && <th className="px-4 py-2 text-center border-b">Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -52,6 +54,19 @@ const Table = ({
                       {row[header] ?? "N/A"}
                     </td>
                   ))}
+                  {editable && (
+                    <td className="px-4 text-center py-2 border-b">
+                      <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        onClick={(e) => {
+                          e.stopPropagation(); 
+                          console.log(`Edit clicked on edit:`, row);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      </td>
+                  )}
                 </tr>
               )
             )}
