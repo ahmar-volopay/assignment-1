@@ -2,6 +2,9 @@ import {
   fetchProductRequest,
   fetchProductSuccess,
   fetchProductFailure,
+  updateProductRequest,
+  updateProductSuccess,
+  updateProductFailure
 } from "../reducers/productReducer";
 import axios from "axios";
 
@@ -21,3 +24,16 @@ export const fetchProduct = (limit = 15, skip = 0, selectedCategory = "", replac
     }
   };
 };
+
+export const updateProduct = (id, udpateData) => {
+  return async (dispatch) => {
+    dispatch(updateProductRequest());
+    try {
+      const response = await axios.put(`https://dummyjson.com/products/${id}`, udpateData);
+      console.log(response);
+    }
+    catch (error) {
+      dispatch(updateProductFailure(error.message));
+    }
+  }
+}

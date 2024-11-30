@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { fetchProduct } from "../store/actions/productActions";
+import { fetchProduct, updateProduct } from "../store/actions/productActions";
 import {
   titleSelector,
   categorySelector,
@@ -101,6 +101,13 @@ const Products = () => {
   }));
 
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
+
+  useEffect(() => {
+    const updateData = {
+      title: "New Item"
+    }
+    dispatch(updateProduct(1, updateData))
+  }, [dispatch])
 
   return (
     <div className="p-4">

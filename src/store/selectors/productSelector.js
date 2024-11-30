@@ -14,3 +14,4 @@ export const stockSelector = (state) =>
     state.product.products?.map((product) => product.stock) || [];
 
 export const totalSelector = (state) => state.product.total ;
+
