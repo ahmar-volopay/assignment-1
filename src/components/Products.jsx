@@ -130,6 +130,7 @@ const Products = () => {
         headers={headers}
         bgColor="bg-gray-100"
         noDataMessage="No products available"
+        editable={true}
       />
 
       {loading && page > 0 && <p>Loading more products...</p>}
