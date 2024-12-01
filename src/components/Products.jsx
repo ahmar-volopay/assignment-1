@@ -24,7 +24,7 @@ const Products = () => {
   const [prevCategory, setPrevCategory] = useState("");
   const [skip, setSkip] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
-
+  const [udpateIndex, setUpdateIndex] = useState();
   const limit = 15;
 
   const listCategory = useSelector(listCategorySelector);
@@ -104,11 +104,17 @@ const Products = () => {
 
   useEffect(() => {
     const updateData = {
-      title: "New Item"
+      title: "New Item",
+      price: 89,
+      stock: 0,
+      rating: 2
     }
     dispatch(updateProduct(1, updateData))
   }, [dispatch])
 
+  useEffect(() => {
+    console.log(udpateIndex);
+  })
   return (
     <div className="p-4">
       <h1 className="text-center font-bold text-2xl py-4">Product Table</h1>
@@ -138,6 +144,7 @@ const Products = () => {
         bgColor="bg-gray-100"
         noDataMessage="No products available"
         editable={true}
+        passUpdateIndex={setUpdateIndex}
       />
 
       {loading && page > 0 && <p>Loading more products...</p>}

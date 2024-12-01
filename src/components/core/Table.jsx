@@ -9,7 +9,8 @@ const Table = ({
   renderRow,
   onRowClick,
   noDataMessage = "No data available",
-  editable
+  editable,
+  passUpdateIndex
 }) => {
   const navigate = useNavigate();
 
@@ -17,7 +18,7 @@ const Table = ({
     if (onRowClick) onRowClick(row);
     else if (row.ticker) navigate(`/company/${row.ticker}`);
   };
-
+  
   return (
     <div className="overflow-x-auto">
       {data && data.length > 0 ? (
@@ -61,6 +62,7 @@ const Table = ({
                         onClick={(e) => {
                           e.stopPropagation(); 
                           console.log(`ID of clicked item: `, index+1);
+                          passUpdateIndex(index+1);
                         }}
                       >
                         Edit
