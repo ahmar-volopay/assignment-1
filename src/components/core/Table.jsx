@@ -2,15 +2,23 @@ import React, { useState } from "react";
 import Modal from "./Modal";
 
 const Table = ({ data, headers, editable, onUpdate, excludeFields = [] }) => {
-  const [editItem, setEditItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const handleEditClick = (item) => {
-    setEditItem(item);
+    setSelectedItem(item); 
+    setShowModal(true); 
   };
 
   const handleSave = (updatedData) => {
-    onUpdate(editItem.id, updatedData);
-    setEditItem(null);
+    onUpdate(selectedItem.id, updatedData);
+    setShowModal(false); 
+    setSelectedItem(null); 
+  };
+
+  const handleClose = () => {
+    setShowModal(false); 
+    setSelectedItem(null);
   };
 
   return (
@@ -59,14 +67,14 @@ const Table = ({ data, headers, editable, onUpdate, excludeFields = [] }) => {
         </tbody>
       </table>
 
-      {editItem && (
-        <Modal
-          item={editItem}
-          headers={headers}  
-          onClose={() => setEditItem(null)}
-          onSave={handleSave}
-        />
-      )}
+
+      <Modal
+        item={selectedItem}
+        headers={headers}
+        showModal={showModal} 
+        onClose={handleClose} 
+        onSave={handleSave} 
+      />
     </div>
   );
 };

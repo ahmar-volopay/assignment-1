@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MODES } from "../../constants/actionModes";
 
-const Modal = ({ item, onClose, onSave, mode = MODES.EDIT, headers }) => {
+const Modal = ({ item, onClose, onSave, mode = MODES.EDIT, headers, showModal }) => {
   const initialFormData =
     mode === MODES.ADD
       ? headers.reduce((acc, header) => ({ ...acc, [header]: "" }), {})
@@ -26,9 +26,11 @@ const Modal = ({ item, onClose, onSave, mode = MODES.EDIT, headers }) => {
     if (mode === MODES.ADD) {
       onSave(formData);
     } else {
-      onSave({ ...formData, id: item.id });
+      onSave({ ...formData, id: item?.id });
     }
   };
+
+  if (!showModal) return null; 
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
@@ -42,7 +44,7 @@ const Modal = ({ item, onClose, onSave, mode = MODES.EDIT, headers }) => {
               <label className="block text-sm font-medium mb-1">{header}</label>
               <input
                 type="text"
-                value={formData[header]}
+                value={formData[header] || ""}
                 onChange={(e) => handleChange(header, e.target.value)}
                 className="w-full border px-3 py-2 rounded-lg"
               />

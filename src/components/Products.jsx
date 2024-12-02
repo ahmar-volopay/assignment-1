@@ -9,7 +9,7 @@ import { useInView } from "react-intersection-observer";
 import Category from "./core/Category";
 import Table from "./core/Table";
 import Modal from "./core/Modal";
-import { MODES } from "../constants/actionModes"; // Import MODES
+import { MODES } from "../constants/actionModes";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ const Products = () => {
   const [skip, setSkip] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState(MODES.EDIT); // Use constant for mode
+  const [modalMode, setModalMode] = useState(MODES.EDIT);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const limit = 15;
@@ -101,12 +101,12 @@ const Products = () => {
 
   const openEditModal = (product) => {
     setSelectedProduct(product);
-    setModalMode(MODES.EDIT); // 
+    setModalMode(MODES.EDIT);
     setModalVisible(true);
   };
 
   const openAddModal = () => {
-    setModalMode(MODES.ADD); 
+    setModalMode(MODES.ADD);
     setModalVisible(true);
   };
 
@@ -162,7 +162,7 @@ const Products = () => {
         headers={headers}
         editable={true}
         onUpdate={handleUpdate}
-        excludeFields={['id']}
+        excludeFields={["id"]}
       />
 
       {loading && page > 0 && <p>Loading more products...</p>}
@@ -172,15 +172,15 @@ const Products = () => {
           <span>No more items</span>
         </div>
       )}
-      {modalVisible && (
-        <Modal
-          item={selectedProduct}
-          onClose={() => setModalVisible(false)}
-          onSave={modalMode === MODES.ADD ? handleAdd : handleUpdate}
-          mode={modalMode}
-          headers={headers}
-        />
-      )}
+
+      <Modal
+        item={selectedProduct}
+        onClose={() => setModalVisible(false)}
+        onSave={modalMode === MODES.ADD ? handleAdd : handleUpdate}
+        mode={modalMode}
+        headers={headers}
+        showModal={modalVisible}
+      />
     </div>
   );
 };
