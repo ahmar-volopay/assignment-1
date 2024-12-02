@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
 
-const Table = ({ data, headers, editable, onUpdate }) => {
+const Table = ({ data, headers, editable, onUpdate, excludeFields = [] }) => {
   const [editItem, setEditItem] = useState(null);
 
   const handleEditClick = (item) => {
@@ -18,9 +18,14 @@ const Table = ({ data, headers, editable, onUpdate }) => {
       <table className="table-auto w-full bg-gray-100">
         <thead>
           <tr>
-            {headers.map((header, index) => (
-              <th key={index} className="px-4 py-2">{header}</th>
-            ))}
+            <th className="px-4 py-2">ID</th>
+
+            {headers
+              .filter((header) => !excludeFields.includes(header))
+              .map((header, index) => (
+                <th key={index} className="px-4 py-2">{header}</th>
+              ))}
+            
             {editable && <th>Actions</th>}
           </tr>
         </thead>
@@ -28,9 +33,14 @@ const Table = ({ data, headers, editable, onUpdate }) => {
           {data.length > 0 ? (
             data.map((row) => (
               <tr key={row.id}>
-                {Object.values(row).map((value, index) => (
-                  <td key={index} className="border px-4 py-2">{value}</td>
-                ))}
+                <td className="border px-4 py-2">{row.id}</td>
+
+                {Object.keys(row)
+                  .filter((key) => !excludeFields.includes(key))
+                  .map((key, index) => (
+                    <td key={index} className="border px-4 py-2">{row[key]}</td>
+                  ))}
+                
                 {editable && (
                   <td>
                     <button

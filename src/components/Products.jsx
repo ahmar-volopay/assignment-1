@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { fetchProduct, updateProduct } from "../store/actions/productActions";
+import { fetchProduct, updateProduct, addProduct } from "../store/actions/productActions";
 import { fetchCategory } from "../store/actions/categoryAction";
-import {
-  titleSelector,
-  categorySelector,
-  priceSelector,
-  ratingSelector,
-  stockSelector,
-  totalSelector,
-} from "../store/selectors/productSelector";
+import { titleSelector, categorySelector, priceSelector, ratingSelector, stockSelector, totalSelector } from "../store/selectors/productSelector";
 import { listCategorySelector } from "../store/selectors/categorySelector";
 import { useInView } from "react-intersection-observer";
 import Category from "./core/Category";
 import Table from "./core/Table";
-
+import Modal from "./core/Modal";
 const Products = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,9 +17,13 @@ const Products = () => {
   const [prevCategory, setPrevCategory] = useState("");
   const [skip, setSkip] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMode, setModalMode] = useState("edit");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const limit = 15;
 
-  // Selectors for product data and categories
+
   const listCategory = useSelector(listCategorySelector);
   const titles = useSelector(titleSelector);
   const categories = useSelector(categorySelector);
@@ -93,13 +90,30 @@ const Products = () => {
   const handleUpdate = (id, updatedData) => {
     const { id: _, ...dataToUpdate } = updatedData;
     dispatch(updateProduct(id, dataToUpdate));
+    setModalVisible(false);
+  };
+
+  const handleAdd = (newItem) => {
+    dispatch(addProduct(newItem));
+    setModalVisible(false);
+  };
+
+  const openEditModal = (product) => {
+    setSelectedProduct(product);
+    setModalMode("edit");
+    setModalVisible(true);
+  };
+
+  const openAddModal = () => {
+    setModalMode("add");
+    setModalVisible(true);
   };
 
   if (loading && page === 0) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   const data = titles.map((title, index) => ({
-    id: index + 1, 
+    id: index + 1,
     title,
     category: categories[index],
     price: `$${prices[index]}`,
@@ -112,40 +126,60 @@ const Products = () => {
   return (
     <div className="p-4">
       <h1 className="text-center font-bold text-2xl py-4">Product Table</h1>
+      <div className="flex items-center   justify-between">
+        <div className="flex gap-between">
+          <div className="p-2 flex items-center flex-wrap gap-2 font-semibold">
+            <div>Filter by Categories: </div>
+            {listCategory.length > 0
+              ? listCategory.slice(0, 5).map((category, index) => (
+                <Category
+                  key={index}
+                  name={category.name}
+                  onClick={() => handleCategoryClick(category.slug)}
+                />
+              ))
+              : "No categories available"}
+            <button
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleClear}
+            >
+              Clear
+            </button>
 
-      <div className="p-2 flex items-center flex-wrap gap-2 font-semibold">
-        <div>Filter by Categories: </div>
-        {listCategory.length > 0
-          ? listCategory.slice(0, 5).map((category, index) => (
-              <Category
-                key={index}
-                name={category.name}
-                onClick={() => handleCategoryClick(category.slug)}
-              />
-            ))
-          : "No categories available"}
-        <button
-          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleClear}
-        >
-          Clear
-        </button>
+          </div>
+
+        </div>
+        <div>
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onClick={openAddModal}
+          >
+            Add New Product
+          </button>
+        </div>
       </div>
-
       <Table
         data={data}
         headers={headers}
-        bgColor="bg-gray-100"
-        noDataMessage="No products available"
         editable={true}
         onUpdate={handleUpdate}
-        excludeFields={["id"]}
+        excludeFields={['id']}
       />
+
 
       {loading && page > 0 && <p>Loading more products...</p>}
       <div ref={ref} style={{ height: "20px" }}></div>
       {page * limit >= total && (
         <div className="flex justify-center font-bold">X - End of the List - X</div>
+      )}
+
+      {modalVisible && (
+        <Modal
+          item={selectedProduct}
+          onClose={() => setModalVisible(false)}
+          onSave={modalMode === "add" ? handleAdd : handleUpdate}
+          mode={modalMode}
+        />
       )}
     </div>
   );

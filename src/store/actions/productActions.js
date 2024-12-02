@@ -5,6 +5,9 @@ import {
   updateProductRequest,
   updateProductSuccess,
   updateProductFailure,
+  createProductRequest,
+  createProductSuccess,
+  createProductFailure,
 } from "../reducers/productReducer";
 import axios from "axios";
 
@@ -36,6 +39,21 @@ export const updateProduct = (id, updatedData) => {
       dispatch(updateProductSuccess(response.data));
     } catch (error) {
       dispatch(updateProductFailure(error.message));
+    }
+  };
+};
+
+export const addProduct = (newProduct) => {
+  return async (dispatch) => {
+    dispatch(createProductRequest());
+    try {
+      const response = await axios.post("https://dummyjson.com/products/add", newProduct, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      dispatch(createProductSuccess(response.data));
+    } catch (error) {
+      dispatch(createProductFailure(error.message));
     }
   };
 };
