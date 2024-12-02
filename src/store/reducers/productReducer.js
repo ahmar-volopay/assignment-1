@@ -5,8 +5,8 @@ const productSlice = createSlice({
   initialState: {
     fetchLoading: false,
     fetchError: null,
-    products: [], 
-    total: null, 
+    products: [],
+    total: null,
     updateLoading: false,
     updateSuccess: false,
     updateError: null,
@@ -19,14 +19,13 @@ const productSlice = createSlice({
     fetchProductSuccess: (state, action) => {
       state.fetchLoading = false;
 
-
       if (action.payload.replace) {
-        state.products = action.payload.products; 
+        state.products = action.payload.products;
       } else {
-        state.products = [...state.products, ...action.payload.products]; 
+        state.products = [...state.products, ...action.payload.products];
       }
 
-      state.total = action.payload.total; 
+      state.total = action.payload.total;
     },
     fetchProductFailure: (state, action) => {
       state.fetchLoading = false;
@@ -36,16 +35,17 @@ const productSlice = createSlice({
       state.updateLoading = true;
       state.updateError = null;
     },
-    updateProductSuccess: (state) => {
+    updateProductSuccess: (state, action) => {
       state.updateLoading = false;
-      state.products.map((product) => {
-        product.id === action.payload.id ? action.payload : product;
-      })
+      state.products = state.products.map((product) =>
+        product.id === action.payload.id ? { ...product, ...action.payload } : product
+      );
+      state.updateSuccess = true;
     },
     updateProductFailure: (state, action) => {
       state.updateLoading = false;
       state.updateError = action.payload;
-    }
+    },
   },
 });
 
@@ -55,7 +55,7 @@ export const {
   fetchProductFailure,
   updateProductRequest,
   updateProductSuccess,
-  updateProductFailure
+  updateProductFailure,
 } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -1,102 +1,65 @@
 import React, { useState } from "react";
-import Modal from "./Modal"; // Import the Modal component
+import Modal from "./Modal";
 
-const Table = ({
-  data,
-  headers,
-  bgColor,
-  renderRow,
-  onRowClick,
-  noDataMessage = "No data available",
-  editable,
-  passUpdateIndex,
-}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
+const Table = ({ data, headers, editable, onUpdate }) => {
+  const [editItem, setEditItem] = useState(null);
 
-  const handleEditClick = (row) => {
-    setSelectedRow(row);
-    setIsModalOpen(true);
+  const handleEditClick = (item) => {
+    setEditItem(item);
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedRow(null);
-  };
-
-  const handleSave = (updatedRow) => {
-    console.log("Updated Row:", updatedRow);
-    passUpdateIndex(updatedRow); // Call the callback with updated data
+  const handleSave = (updatedData) => {
+    onUpdate(editItem.id, updatedData);
+    setEditItem(null);
   };
 
   return (
-    <div className="overflow-x-auto">
-      {data && data.length > 0 ? (
-        <table className={`table-auto w-full border-2 ${bgColor}`}>
-          <thead>
-            <tr>
-              <th className="px-4 py-2 text-center border-b">Index</th>
-              {headers.map((header) => (
-                <th
-                  key={header}
-                  className="px-4 py-2 text-center border-b capitalize"
-                >
-                  {header.replace("_", " ")}
-                </th>
-              ))}
-              {editable && (
-                <th className="px-4 py-2 text-center border-b">Action</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, index) =>
-              renderRow ? (
-                renderRow(row, index)
-              ) : (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-100 cursor-pointer"
-                  onClick={() => onRowClick?.(row)}
-                >
-                  <td className="px-4 text-center py-2 border-b">
-                    {index + 1}
-                  </td>
-                  {headers.map((header) => (
-                    <td
-                      key={header}
-                      className="px-4 text-center py-2 border-b"
+    <div>
+      <table className="table-auto w-full bg-gray-100">
+        <thead>
+          <tr>
+            {headers.map((header, index) => (
+              <th key={index} className="px-4 py-2">{header}</th>
+            ))}
+            {editable && <th>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {data.length > 0 ? (
+            data.map((row) => (
+              <tr key={row.id}>
+                {Object.values(row).map((value, index) => (
+                  <td key={index} className="border px-4 py-2">{value}</td>
+                ))}
+                {editable && (
+                  <td>
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded"
+                      onClick={() => handleEditClick(row)}
                     >
-                      {row[header] ?? "N/A"}
-                    </td>
-                  ))}
-                  {editable && (
-                    <td className="px-4 text-center py-2 border-b">
-                      <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick(row);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
-      ) : (
-        <p className="text-center text-gray-600">{noDataMessage}</p>
+                      Edit
+                    </button>
+                  </td>
+                )}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={headers.length + 1} className="text-center py-4">
+                No data available
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {editItem && (
+        <Modal
+          item={editItem}
+          onClose={() => setEditItem(null)}
+          onSave={handleSave}
+        />
       )}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        onSave={handleSave}
-        rowData={selectedRow}
-      />
     </div>
   );
 };

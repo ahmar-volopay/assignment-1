@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { fetchProduct, updateProduct } from "../store/actions/productActions";
+import { fetchCategory } from "../store/actions/categoryAction";
 import {
   titleSelector,
   categorySelector,
@@ -11,10 +12,9 @@ import {
   totalSelector,
 } from "../store/selectors/productSelector";
 import { listCategorySelector } from "../store/selectors/categorySelector";
+import { useInView } from "react-intersection-observer";
 import Category from "./core/Category";
 import Table from "./core/Table";
-import { useInView } from "react-intersection-observer";
-import { fetchCategory } from "../store/actions/categoryAction";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -24,17 +24,17 @@ const Products = () => {
   const [prevCategory, setPrevCategory] = useState("");
   const [skip, setSkip] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
-  const [udpateIndex, setUpdateIndex] = useState();
   const limit = 15;
 
+  // Selectors for product data and categories
   const listCategory = useSelector(listCategorySelector);
   const titles = useSelector(titleSelector);
   const categories = useSelector(categorySelector);
   const prices = useSelector(priceSelector);
   const ratings = useSelector(ratingSelector);
   const stocks = useSelector(stockSelector);
-  const loading = useSelector((state) => state.product.loading);
-  const error = useSelector((state) => state.product.error);
+  const loading = useSelector((state) => state.product.fetchLoading);
+  const error = useSelector((state) => state.product.fetchError);
   const total = useSelector(totalSelector);
 
   useEffect(() => {
@@ -53,6 +53,7 @@ const Products = () => {
       dispatch(fetchProduct(limit, skip, selectedCategory, false));
       setSkip(skip + limit);
     }
+
     setIsFetching(false);
   }, [dispatch, isFetching, selectedCategory, prevCategory, page, skip]);
 
@@ -89,10 +90,16 @@ const Products = () => {
     }
   }, [searchParams, setSearchParams]);
 
+  const handleUpdate = (id, updatedData) => {
+    const { id: _, ...dataToUpdate } = updatedData;
+    dispatch(updateProduct(id, dataToUpdate));
+  };
+
   if (loading && page === 0) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   const data = titles.map((title, index) => ({
+    id: index + 1, 
     title,
     category: categories[index],
     price: `$${prices[index]}`,
@@ -100,27 +107,14 @@ const Products = () => {
     stock: stocks[index],
   }));
 
-  const headers = data.length > 0 ? Object.keys(data[0]) : [];
+  const headers = data.length > 0 ? Object.keys(data[0]).filter((key) => key !== "id") : [];
 
-  useEffect(() => {
-    const updateData = {
-      title: "New Item",
-      price: 89,
-      stock: 0,
-      rating: 2
-    }
-    dispatch(updateProduct(1, updateData))
-  }, [dispatch])
-
-  useEffect(() => {
-    console.log(udpateIndex);
-  })
   return (
     <div className="p-4">
       <h1 className="text-center font-bold text-2xl py-4">Product Table</h1>
 
       <div className="p-2 flex items-center flex-wrap gap-2 font-semibold">
-        <div>Filter from Categories: </div>
+        <div>Filter by Categories: </div>
         {listCategory.length > 0
           ? listCategory.slice(0, 5).map((category, index) => (
               <Category
@@ -144,7 +138,8 @@ const Products = () => {
         bgColor="bg-gray-100"
         noDataMessage="No products available"
         editable={true}
-        passUpdateIndex={setUpdateIndex}
+        onUpdate={handleUpdate}
+        excludeFields={["id"]}
       />
 
       {loading && page > 0 && <p>Loading more products...</p>}
