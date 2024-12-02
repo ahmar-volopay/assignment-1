@@ -33,7 +33,6 @@ export const updateProduct = (id, updatedData) => {
     dispatch(updateProductRequest());
     try {
       const response = await axios.put(`https://dummyjson.com/products/${id}`, updatedData);
-      console.log(response.data)
       dispatch(updateProductSuccess(response.data));
     } catch (error) {
       dispatch(updateProductFailure(error.message));
