@@ -1,41 +1,76 @@
-import { createSlice } from "@reduxjs/toolkit";
+    import { createSlice } from "@reduxjs/toolkit";
 
-const productSlice = createSlice({
-  name: "product",
-  initialState: {
-    loading: false,
-    error: null,
-    products: [], 
-    total: null, 
-  },
-  reducers: {
-    fetchProductRequest: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    fetchProductSuccess: (state, action) => {
-      state.loading = false;
+    const productSlice = createSlice({
+      name: "product",
+      initialState: {
+        fetchLoading: false,
+        fetchError: null,
+        products: [],
+        total: null,
+        updateLoading: false,
+        updateSuccess: false,
+        updateError: null,
+      },
+      reducers: {
+        fetchProductRequest: (state) => {
+          state.fetchLoading = true;
+          state.fetchError = null;
+        },
+        fetchProductSuccess: (state, action) => {
+          state.fetchLoading = false;
 
+          if (action.payload.replace) {
+            state.products = action.payload.products;
+          } else {
+            state.products = [...state.products, ...action.payload.products];
+          }
 
-      if (action.payload.replace) {
-        state.products = action.payload.products; 
-      } else {
-        state.products = [...state.products, ...action.payload.products]; 
-      }
-
-      state.total = action.payload.total; 
-    },
-    fetchProductFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
-  },
-});
-
-export const {
-  fetchProductRequest,
-  fetchProductSuccess,
-  fetchProductFailure,
-} = productSlice.actions;
-
-export default productSlice.reducer;
+          state.total = action.payload.total;
+        },
+        fetchProductFailure: (state, action) => {
+          state.fetchLoading = false;
+          state.fetchError = action.payload;
+        },
+        updateProductRequest: (state) => {
+          state.updateLoading = true;
+          state.updateError = null;
+        },
+        updateProductSuccess: (state, action) => {
+          state.updateLoading = false;
+          state.products = state.products.map((product) =>
+            product.id === action.payload.id ? { ...product, ...action.payload } : product
+          );
+          state.updateSuccess = true;
+        },
+        updateProductFailure: (state, action) => {
+          state.updateLoading = false;
+          state.updateError = action.payload;
+        },
+        createProductRequest: (state) => {
+          state.createLoading = true;
+          state.createError = null;
+        },
+        createProductSuccess: (state, action) => {
+          state.createLoading = false;
+          state.products = [{ id: 0, ...action.payload }, ...state.products];
+        },
+        createProductFailure: (state, action) => {
+          state.createLoading = false;
+          state.createError = action.payload;
+        },
+      },
+    });
+    
+    export const {
+      fetchProductRequest,
+      fetchProductSuccess,
+      fetchProductFailure,
+      updateProductRequest,
+      updateProductSuccess,
+      updateProductFailure,
+      createProductRequest,
+      createProductSuccess,
+      createProductFailure,
+    } = productSlice.actions;
+    
+    export default productSlice.reducer;

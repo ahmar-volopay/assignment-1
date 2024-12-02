@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { fetchProduct } from "../store/actions/productActions";
-import {
-  titleSelector,
-  categorySelector,
-  priceSelector,
-  ratingSelector,
-  stockSelector,
-  totalSelector,
-} from "../store/selectors/productSelector";
+import { useSearchParams } from "react-router-dom";
+import { fetchProduct, updateProduct, addProduct } from "../store/actions/productActions";
+import { fetchCategory } from "../store/actions/categoryAction";
+import { titleSelector, categorySelector, priceSelector, ratingSelector, stockSelector, totalSelector } from "../store/selectors/productSelector";
 import { listCategorySelector } from "../store/selectors/categorySelector";
+import { useInView } from "react-intersection-observer";
 import Category from "./core/Category";
 import Table from "./core/Table";
-import { useInView } from "react-intersection-observer";
-import { fetchCategory } from "../store/actions/categoryAction";
+import Modal from "./core/Modal";
+import { MODES } from "../constants/actionModes";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -24,6 +19,9 @@ const Products = () => {
   const [prevCategory, setPrevCategory] = useState("");
   const [skip, setSkip] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMode, setModalMode] = useState(MODES.EDIT);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const limit = 15;
 
@@ -33,8 +31,8 @@ const Products = () => {
   const prices = useSelector(priceSelector);
   const ratings = useSelector(ratingSelector);
   const stocks = useSelector(stockSelector);
-  const loading = useSelector((state) => state.product.loading);
-  const error = useSelector((state) => state.product.error);
+  const loading = useSelector((state) => state.product.fetchLoading);
+  const error = useSelector((state) => state.product.fetchError);
   const total = useSelector(totalSelector);
 
   useEffect(() => {
@@ -53,6 +51,7 @@ const Products = () => {
       dispatch(fetchProduct(limit, skip, selectedCategory, false));
       setSkip(skip + limit);
     }
+
     setIsFetching(false);
   }, [dispatch, isFetching, selectedCategory, prevCategory, page, skip]);
 
@@ -89,11 +88,33 @@ const Products = () => {
     }
   }, [searchParams, setSearchParams]);
 
+  const handleUpdate = (id, updatedData) => {
+    const { id: _, ...dataToUpdate } = updatedData;
+    dispatch(updateProduct(id, dataToUpdate));
+    setModalVisible(false);
+  };
+
+  const handleAdd = (newItem) => {
+    dispatch(addProduct(newItem));
+    setModalVisible(false);
+  };
+
+  const openEditModal = (product) => {
+    setSelectedProduct(product);
+    setModalMode(MODES.EDIT);
+    setModalVisible(true);
+  };
+
+  const openAddModal = () => {
+    setModalMode(MODES.ADD);
+    setModalVisible(true);
+  };
+
   if (loading && page === 0) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const headers = ["title", "category", "price", "rating", "stock"];
   const data = titles.map((title, index) => ({
+    id: index + 1,
     title,
     category: categories[index],
     price: `$${prices[index]}`,
@@ -101,41 +122,65 @@ const Products = () => {
     stock: stocks[index],
   }));
 
+  const headers = data.length > 0 ? Object.keys(data[0]).filter((key) => key !== "id") : [];
+
   return (
     <div className="p-4">
       <h1 className="text-center font-bold text-2xl py-4">Product Table</h1>
-
-      <div className="p-2 flex items-center flex-wrap gap-2 font-semibold">
-        <div>Filter from Categories: </div>
-        {listCategory.length > 0
-          ? listCategory.slice(0, 5).map((category, index) => (
-              <Category
-                key={index}
-                name={category.name}
-                onClick={() => handleCategoryClick(category.slug)}
-              />
-            ))
-          : "No categories available"}
-        <button
-          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleClear}
-        >
-          Clear
-        </button>
+      <div className="flex items-center justify-between">
+        <div className="flex gap-between">
+          <div className="p-2 flex items-center flex-wrap gap-2 font-semibold">
+            <div>Filter by Categories: </div>
+            {listCategory.length > 0
+              ? listCategory.slice(0, 5).map((category, index) => (
+                  <Category
+                    key={index}
+                    name={category.name}
+                    onClick={() => handleCategoryClick(category.slug)}
+                  />
+                ))
+              : "No categories available"}
+            <button
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        <div>
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onClick={openAddModal}
+          >
+            Add New Product
+          </button>
+        </div>
       </div>
-
       <Table
         data={data}
         headers={headers}
-        bgColor="bg-gray-100"
-        noDataMessage="No products available"
+        editable={true}
+        onUpdate={handleUpdate}
+        excludeFields={["id"]}
       />
 
       {loading && page > 0 && <p>Loading more products...</p>}
       <div ref={ref} style={{ height: "20px" }}></div>
       {page * limit >= total && (
-        <div className="flex justify-center font-bold">X - End of the List - X</div>
+        <div>
+          <span>No more items</span>
+        </div>
       )}
+
+      <Modal
+        item={selectedProduct}
+        onClose={() => setModalVisible(false)}
+        onSave={modalMode === MODES.ADD ? handleAdd : handleUpdate}
+        mode={modalMode}
+        headers={headers}
+        showModal={modalVisible}
+      />
     </div>
   );
 };

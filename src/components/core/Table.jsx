@@ -1,76 +1,82 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import Modal from "./Modal";
 
-const Table = ({
-  data,
-  headers,
-  bgColor,
-  renderRow,
-  onRowClick,
-  noDataMessage = "No data available",
-}) => {
-  const navigate = useNavigate();
+const Table = ({ data, headers, editable, onUpdate, excludeFields = [] }) => {
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleRowClick = (row) => {
-    if (onRowClick) onRowClick(row);
-    else if (row.ticker) navigate(`/company/${row.ticker}`);
+  const handleEditClick = (item) => {
+    setSelectedItem(item); 
+    setShowModal(true); 
+  };
+
+  const handleSave = (updatedData) => {
+    onUpdate(selectedItem.id, updatedData);
+    setShowModal(false); 
+    setSelectedItem(null); 
+  };
+
+  const handleClose = () => {
+    setShowModal(false); 
+    setSelectedItem(null);
   };
 
   return (
-    <div className="overflow-x-auto">
-      {data && data.length > 0 ? (
-        <table className={`table-auto w-full border-2 ${bgColor}`}>
-          <thead>
-            <tr>
-              <th className="px-4 py-2 text-center border-b">Index</th>
-              {headers.map((header) => (
-                <th
-                  key={header}
-                  className="px-4 py-2 text-center border-b capitalize"
-                >
-                  {header.replace("_", " ")}
-                </th>
+    <div>
+      <table className="table-auto w-full bg-gray-100">
+        <thead>
+          <tr>
+            <th className="px-4 py-2">ID</th>
+            {headers
+              .filter((header) => !excludeFields.includes(header))
+              .map((header, index) => (
+                <th key={index} className="px-4 py-2">{header}</th>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, index) =>
-              renderRow ? (
-                renderRow(row, index)
-              ) : (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleRowClick(row)}
-                >
-                  <td className="px-4 text-center py-2 border-b">
-                    {index + 1}
-                  </td>
-                  {headers.map((header) => (
-                    <td key={header} className="px-4 text-center py-2 border-b">
-                      {row[header] ?? "N/A"}
-                    </td>
+            {editable && <th>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {data.length > 0 ? (
+            data.map((row) => (
+              <tr key={row.id}>
+                <td className="border px-4 py-2">{row.id}</td>
+                {Object.keys(row)
+                  .filter((key) => !excludeFields.includes(key))
+                  .map((key, index) => (
+                    <td key={index} className="border px-4 py-2">{row[key]}</td>
                   ))}
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
-      ) : (
-        <p className="text-center text-gray-600">{noDataMessage}</p>
-      )}
+                {editable && (
+                  <td>
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded"
+                      onClick={() => handleEditClick(row)}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                )}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={headers.length + 1} className="text-center py-4">
+                No data available
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+
+      <Modal
+        item={selectedItem}
+        headers={headers}
+        showModal={showModal} 
+        onClose={handleClose} 
+        onSave={handleSave} 
+      />
     </div>
   );
-};
-
-Table.propTypes = {
-  data: PropTypes.array.isRequired,
-  headers: PropTypes.array.isRequired,
-  bgColor: PropTypes.string,
-  renderRow: PropTypes.func,
-  onRowClick: PropTypes.func,
-  noDataMessage: PropTypes.string,
 };
 
 export default Table;
