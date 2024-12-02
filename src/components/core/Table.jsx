@@ -1,6 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import Modal from "./Modal"; // Import the Modal component
 
 const Table = ({
   data,
@@ -10,15 +9,26 @@ const Table = ({
   onRowClick,
   noDataMessage = "No data available",
   editable,
-  passUpdateIndex
+  passUpdateIndex,
 }) => {
-  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
-  const handleRowClick = (row) => {
-    if (onRowClick) onRowClick(row);
-    else if (row.ticker) navigate(`/company/${row.ticker}`);
+  const handleEditClick = (row) => {
+    setSelectedRow(row);
+    setIsModalOpen(true);
   };
-  
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedRow(null);
+  };
+
+  const handleSave = (updatedRow) => {
+    console.log("Updated Row:", updatedRow);
+    passUpdateIndex(updatedRow); // Call the callback with updated data
+  };
+
   return (
     <div className="overflow-x-auto">
       {data && data.length > 0 ? (
@@ -34,7 +44,9 @@ const Table = ({
                   {header.replace("_", " ")}
                 </th>
               ))}
-              {editable && <th className="px-4 py-2 text-center border-b">Action</th>}
+              {editable && (
+                <th className="px-4 py-2 text-center border-b">Action</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -45,13 +57,16 @@ const Table = ({
                 <tr
                   key={index}
                   className="hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleRowClick(row)}
+                  onClick={() => onRowClick?.(row)}
                 >
                   <td className="px-4 text-center py-2 border-b">
                     {index + 1}
                   </td>
                   {headers.map((header) => (
-                    <td key={header} className="px-4 text-center py-2 border-b">
+                    <td
+                      key={header}
+                      className="px-4 text-center py-2 border-b"
+                    >
                       {row[header] ?? "N/A"}
                     </td>
                   ))}
@@ -60,14 +75,13 @@ const Table = ({
                       <button
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
                         onClick={(e) => {
-                          e.stopPropagation(); 
-                          console.log(`ID of clicked item: `, index+1);
-                          passUpdateIndex(index+1);
+                          e.stopPropagation();
+                          handleEditClick(row);
                         }}
                       >
                         Edit
                       </button>
-                      </td>
+                    </td>
                   )}
                 </tr>
               )
@@ -77,17 +91,14 @@ const Table = ({
       ) : (
         <p className="text-center text-gray-600">{noDataMessage}</p>
       )}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSave={handleSave}
+        rowData={selectedRow}
+      />
     </div>
   );
-};
-
-Table.propTypes = {
-  data: PropTypes.array.isRequired,
-  headers: PropTypes.array.isRequired,
-  bgColor: PropTypes.string,
-  renderRow: PropTypes.func,
-  onRowClick: PropTypes.func,
-  noDataMessage: PropTypes.string,
 };
 
 export default Table;
