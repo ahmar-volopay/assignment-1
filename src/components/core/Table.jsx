@@ -19,13 +19,11 @@ const Table = ({ data, headers, editable, onUpdate, excludeFields = [] }) => {
         <thead>
           <tr>
             <th className="px-4 py-2">ID</th>
-
             {headers
               .filter((header) => !excludeFields.includes(header))
               .map((header, index) => (
                 <th key={index} className="px-4 py-2">{header}</th>
               ))}
-            
             {editable && <th>Actions</th>}
           </tr>
         </thead>
@@ -34,13 +32,11 @@ const Table = ({ data, headers, editable, onUpdate, excludeFields = [] }) => {
             data.map((row) => (
               <tr key={row.id}>
                 <td className="border px-4 py-2">{row.id}</td>
-
                 {Object.keys(row)
                   .filter((key) => !excludeFields.includes(key))
                   .map((key, index) => (
                     <td key={index} className="border px-4 py-2">{row[key]}</td>
                   ))}
-                
                 {editable && (
                   <td>
                     <button
@@ -66,6 +62,7 @@ const Table = ({ data, headers, editable, onUpdate, excludeFields = [] }) => {
       {editItem && (
         <Modal
           item={editItem}
+          headers={headers}  
           onClose={() => setEditItem(null)}
           onSave={handleSave}
         />

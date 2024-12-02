@@ -9,6 +9,8 @@ import { useInView } from "react-intersection-observer";
 import Category from "./core/Category";
 import Table from "./core/Table";
 import Modal from "./core/Modal";
+import { MODES } from "../constants/actionModes"; // Import MODES
+
 const Products = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,11 +20,10 @@ const Products = () => {
   const [skip, setSkip] = useState(0);
   const [isFetching, setIsFetching] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState("edit");
+  const [modalMode, setModalMode] = useState(MODES.EDIT); // Use constant for mode
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const limit = 15;
-
 
   const listCategory = useSelector(listCategorySelector);
   const titles = useSelector(titleSelector);
@@ -100,12 +101,12 @@ const Products = () => {
 
   const openEditModal = (product) => {
     setSelectedProduct(product);
-    setModalMode("edit");
+    setModalMode(MODES.EDIT); // 
     setModalVisible(true);
   };
 
   const openAddModal = () => {
-    setModalMode("add");
+    setModalMode(MODES.ADD); 
     setModalVisible(true);
   };
 
@@ -126,18 +127,18 @@ const Products = () => {
   return (
     <div className="p-4">
       <h1 className="text-center font-bold text-2xl py-4">Product Table</h1>
-      <div className="flex items-center   justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex gap-between">
           <div className="p-2 flex items-center flex-wrap gap-2 font-semibold">
             <div>Filter by Categories: </div>
             {listCategory.length > 0
               ? listCategory.slice(0, 5).map((category, index) => (
-                <Category
-                  key={index}
-                  name={category.name}
-                  onClick={() => handleCategoryClick(category.slug)}
-                />
-              ))
+                  <Category
+                    key={index}
+                    name={category.name}
+                    onClick={() => handleCategoryClick(category.slug)}
+                  />
+                ))
               : "No categories available"}
             <button
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
@@ -145,9 +146,7 @@ const Products = () => {
             >
               Clear
             </button>
-
           </div>
-
         </div>
         <div>
           <button
@@ -166,19 +165,20 @@ const Products = () => {
         excludeFields={['id']}
       />
 
-
       {loading && page > 0 && <p>Loading more products...</p>}
       <div ref={ref} style={{ height: "20px" }}></div>
       {page * limit >= total && (
-        <div className="flex justify-center font-bold">X - End of the List - X</div>
+        <div>
+          <span>No more items</span>
+        </div>
       )}
-
       {modalVisible && (
         <Modal
           item={selectedProduct}
           onClose={() => setModalVisible(false)}
-          onSave={modalMode === "add" ? handleAdd : handleUpdate}
+          onSave={modalMode === MODES.ADD ? handleAdd : handleUpdate}
           mode={modalMode}
+          headers={headers}
         />
       )}
     </div>
